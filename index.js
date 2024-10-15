@@ -1,13 +1,27 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Product = require("./models/product.model.js");
+const path = require("path");
+const cors = require("cors");
 const productRoute = require("./routes/product.route.js");
-const { restart } = require("nodemon");
 const fs = require("fs").promises;
+
 const app = express();
 
+// Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// API routes
+app.use("/api/products", productRoute);
+
+// Root route for API health check
+app.get("/api", (req, res) => {
+  res.json({ message: "Welcome to the Shopping List API" });
+});
 
 async function getPasswordFromJson() {
   try {
@@ -20,10 +34,10 @@ async function getPasswordFromJson() {
   }
 }
 
-app.use("/api/products", productRoute);
-
-app.get("/", (req, res) => {
-  res.send("HELLO IT'S WORKING");
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 async function startServer() {
@@ -35,8 +49,9 @@ async function startServer() {
     );
     console.log("Connected to database");
 
-    app.listen(3000, () => {
-      console.log("Application running on port 3000");
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
     });
   } catch (error) {
     console.log("Connection failed:", error);
