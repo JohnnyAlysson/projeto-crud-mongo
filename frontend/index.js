@@ -1,7 +1,7 @@
-// API endpoints
+
 const API_URL = 'http://localhost:3000/api/products';
 
-// DOM Elements
+
 const itemsList = document.getElementById('itemsList');
 const addItemBtn = document.getElementById('addItemBtn');
 const itemModal = document.getElementById('itemModal');
@@ -12,19 +12,19 @@ const dropdownSelected = categoryDropdown.querySelector('.dropdown-selected span
 
 let editingItemId = null;
 
-// Event Listeners
+
 addItemBtn.addEventListener('click', () => openModal());
 closeModal.addEventListener('click', () => closeModalHandler());
 saveItemBtn.addEventListener('click', saveItem);
 categoryDropdown.addEventListener('click', toggleDropdown);
 
-// Initialize
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchItems();
     setupDropdownOptions();
 });
 
-// Fetch items from API
+
 async function fetchItems() {
     try {
         const response = await fetch(API_URL);
@@ -35,7 +35,7 @@ async function fetchItems() {
     }
 }
 
-// Render items in the list
+
 function renderItems(items) {
     itemsList.innerHTML = '';
     items.forEach(item => {
@@ -44,7 +44,7 @@ function renderItems(items) {
     });
 }
 
-// Create item card element
+
 function createItemElement(item) {
     const div = document.createElement('div');
     div.className = 'item-card';
@@ -70,14 +70,14 @@ function createItemElement(item) {
         </div>
     `;
 
-    // Add event listeners for edit and delete buttons
+
     div.querySelector('.edit-btn').addEventListener('click', () => openModal(item));
     div.querySelector('.delete-btn').addEventListener('click', () => deleteItem(item._id));
 
     return div;
 }
 
-// Modal handlers
+
 function openModal(item = null) {
     const modalTitle = itemModal.querySelector('h2');
     const itemNameInput = document.getElementById('itemName');
@@ -108,7 +108,7 @@ function closeModalHandler() {
     editingItemId = null;
 }
 
-// Dropdown handlers
+
 function setupDropdownOptions() {
     const options = categoryDropdown.querySelectorAll('.option');
     options.forEach(option => {
@@ -118,7 +118,6 @@ function setupDropdownOptions() {
         });
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
         if (!categoryDropdown.contains(e.target)) {
             categoryDropdown.classList.remove('active');
@@ -131,7 +130,7 @@ function toggleDropdown(e) {
     categoryDropdown.classList.toggle('active');
 }
 
-// API Operations
+
 async function saveItem() {
     const itemName = document.getElementById('itemName').value;
     const itemCategory = dropdownSelected.textContent;
@@ -152,7 +151,7 @@ async function saveItem() {
 
     try {
         if (editingItemId) {
-            // Update existing item
+ 
             await fetch(`${API_URL}/${editingItemId}`, {
                 method: 'PUT',
                 headers: {
@@ -161,7 +160,7 @@ async function saveItem() {
                 body: JSON.stringify(itemData),
             });
         } else {
-            // Create new item
+
             await fetch(API_URL, {
                 method: 'POST',
                 headers: {
@@ -195,7 +194,7 @@ async function deleteItem(id) {
     }
 }
 
-// Utility Functions
+
 function formatCurrency(value) {
     return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
@@ -203,7 +202,7 @@ function formatCurrency(value) {
     }).format(value);
 }
 
-// Add loading state handlers
+
 function showLoading() {
     itemsList.innerHTML = '<div class="loading">Carregando...</div>';
 }
@@ -215,7 +214,6 @@ function hideLoading() {
     }
 }
 
-// Error handling
 function handleError(error) {
     console.error('Error:', error);
     const errorMessage = document.createElement('div');
@@ -224,12 +222,11 @@ function handleError(error) {
     itemsList.appendChild(errorMessage);
 }
 
-// Add some animations
+
 function addItemAnimation(element) {
     element.style.animation = 'fadeIn 0.3s ease-in';
 }
 
-// Add this to your CSS
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeIn {
@@ -254,7 +251,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Initialize tooltips
+
 function initTooltips() {
     const buttons = document.querySelectorAll('.action-button');
     buttons.forEach(button => {
@@ -262,7 +259,7 @@ function initTooltips() {
     });
 }
 
-// Add responsive handling
+
 function handleResponsive() {
     const isMobile = window.innerWidth <= 768;
     const itemCards = document.querySelectorAll('.item-card');
